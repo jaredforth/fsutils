@@ -68,6 +68,30 @@ pub fn rmdir(path: &str) -> bool {
         true
     }
 }
+
+/// Function to remove directory recursively
+/// Use carefully
+/// Returns bool
+pub fn rm_r(path: &str) -> bool {
+    // Turn str path into Path
+    let new_path = Path::new(path);
+    if new_path.exists() {
+        match fs::remove_dir_all(path) {
+            Ok(_) => {
+                info!("Removed directory at {}", path);
+                true
+            },
+            Err(_e) => {
+                info!("The directory {} is not empty", path);
+                false
+            }
+        }
+    } else {
+        info!("Directory does not exist");
+        true
+    }
+}
+
 /// Check if path exists and return boolean
 pub fn path_exists(path: &str) -> bool {
     // Turn str path into Path
