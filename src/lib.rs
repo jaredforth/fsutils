@@ -143,6 +143,16 @@ pub fn mv(path_one: &str, path_two: &str) {
     }
 }
 
+/// Create file
+pub fn create_file(path: &str) {
+    match fs::File::create(path) {
+        Ok(_f) => {
+            info!("Successfully wrote file to {}", path)
+        }
+        Err(e) => info!("{}", e)
+    }
+}
+
 /// Create file from bytes
 pub fn create_file_bytes(path: &str, bytes_to_write: &[u8]) {
     match fs::File::create(path) {
