@@ -3,8 +3,18 @@ name = "fsutils"
 version = "0.1.0"
 authors = ["Jared Forth <jaredforthdev@gmail.com>"]
 edition = "2018"
+description = "An API for typical filesystem operations based on Bash commands"
+homepage = "https://crates.io/crates/fsutils"
+repository = "https://github.com/jaredforth/fsutils"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+documentation = "https://docs.rs/fsutils"
+keywords = ["filesystem", "utility", "convenience"]
+categories = ["filesystem", "utility"]
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+[badges]
+travis-ci = { repository = "jaredforth/fsutils" }
+appveyor = { repository = "jaredforth/fsutils" }
 
 [dependencies]
 log = "0.4.0"

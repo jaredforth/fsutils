@@ -8,7 +8,7 @@
 
 //! Utilities for common filesystem operations
 //!
-//! fsutils provides an API based on Bash commands and includes a number
+//! **fsutils** provides an API based on Bash commands and includes a number
 //! of utility functions to make interacting with the filesystem simpler and more
 //! ergonomic.
 
