@@ -13,7 +13,10 @@ use std::io::Write;
 /// ## Usage:
 ///
 /// ```
-/// assert_eq!(fsutils::mkdir("./testdir"), true);
+/// assert_eq!(fsutils::mkdir("testdir"), true);
+///
+/// # // Cleanup
+/// # fsutils::rmdir("testdir");
 /// ```
 pub fn mkdir(path: &str) -> bool {
     if !path_exists(path) {
@@ -32,8 +35,15 @@ pub fn mkdir(path: &str) -> bool {
     }
 }
 
-/// Function to remove file
-/// Returns bool
+/// Removes a file at passed path
+/// and returns a boolean based on success or failure.
+///
+/// ## Usage:
+///
+/// ```
+/// fsutils::create_file("testfile.txt");
+/// assert_eq!(fsutils::rm("testfile.txt"), true);
+/// ```
 pub fn rm(path: &str) -> bool {
     // str to Path
     let new_path = Path::new(path);
@@ -53,8 +63,19 @@ pub fn rm(path: &str) -> bool {
     }
 }
 
-/// Function to remove directory
-/// Returns bool
+/// Removes an empty directory
+/// and returns a boolean based on success or failure.
+///
+/// This does not remove a directory recursively. Use `fsutils::rm_r`
+/// if you need recursive directory deletion.
+///
+/// # Usage:
+///
+/// ```
+/// use fsutils::rmdir;
+/// fsutils::mkdir("testdir");
+/// assert_eq!(rmdir("testdir"), true);
+/// ```
 pub fn rmdir(path: &str) -> bool {
     // Turn str path into Path
     let new_path = Path::new(path);
@@ -75,9 +96,19 @@ pub fn rmdir(path: &str) -> bool {
     }
 }
 
-/// Function to remove directory recursively
-/// Use carefully
-/// Returns bool
+/// Removes a directory recursively
+/// and returns a boolean based on success or failure.
+///
+/// You should use this carefully.
+///
+/// ## Usage:
+///
+/// ```
+/// fsutils::mkdir("testdir");
+/// fsutils::create_file("testdir/testfile");
+///
+/// assert_eq!(fsutils::rm_r("testdir"), true);
+/// ```
 pub fn rm_r(path: &str) -> bool {
     // Turn str path into Path
     let new_path = Path::new(path);
@@ -98,7 +129,19 @@ pub fn rm_r(path: &str) -> bool {
     }
 }
 
-/// Check if path exists and return boolean
+/// Checks if a path exists
+/// and returns a boolean based on success or failure.
+///
+/// # Usage:
+///
+/// ```
+/// fsutils::create_file("testfile");
+/// assert_eq!(fsutils::path_exists("testfile"), true);
+/// assert_eq!(fsutils::path_exists("a_very_1234_unlikely_9876_filename"), false);
+/// 
+/// # // Cleanup
+/// # fsutils::rm("testfile");
+/// ```
 pub fn path_exists(path: &str) -> bool {
     // Turn str path into Path
     let new_path = Path::new(path);
@@ -111,7 +154,24 @@ pub fn path_exists(path: &str) -> bool {
     }
 }
 
-/// Check if directory is empty and return boolean
+/// Checks if a directory is empty
+/// and returns a boolean based on success or failure.
+///
+/// # Usage:
+///
+/// ```
+/// fsutils::mkdir("empty_directory");
+/// fsutils::mkdir("full_directory");
+/// fsutils::create_file("full_directory/a_file.txt");
+/// fsutils::create_file("full_directory/another_file.txt");
+///
+/// assert_eq!(fsutils::directory_is_empty("full_directory"), false);
+/// assert_eq!(fsutils::directory_is_empty("empty_directory"), true);
+///
+/// # // Cleanup
+/// # fsutils::rmdir("empty_directory");
+/// # fsutils::rm_r("full_directory");
+/// ```
 pub fn directory_is_empty(path: &str) -> bool {
     // Turn str path into Path
     let new_path = Path::new(path);
@@ -119,11 +179,16 @@ pub fn directory_is_empty(path: &str) -> bool {
         if new_path.is_dir() {
             let mut i = 0;
             // iterate through entries and count them
-            for _ in fs::read_dir(path) {
-                i += 1;
+            // `fs::read_dir` returns type `ReadDir`
+            for entry in fs::read_dir(path) {
+                // Iterating over `ReadDir` returns a Result<DirEntry>`
+                // which is what we want to give us the count.
+                for _ in entry {
+                    i += 1;
+                }
             }
             // if the count of directory entries is 1 (it counts itself), it is empty
-            if i == 1 {
+            if i == 0 {
                 true
             } else {
                 false
@@ -138,36 +203,93 @@ pub fn directory_is_empty(path: &str) -> bool {
     }
 }
 
-/// Move file from one location to another
-pub fn mv(path_one: &str, path_two: &str) {
+/// Moves a file from `path_one` to `path_two`
+/// and returns a boolean based on success or failure.
+///
+/// # Usage:
+///
+/// ```
+/// fsutils::mkdir("directory_one");
+/// fsutils::mkdir("directory_two");
+/// fsutils::create_file("directory_one/the_file");
+///
+/// assert_eq!(fsutils::mv("directory_one/the_file", "directory_two/the_file"), true);
+///
+/// # // Cleanup
+/// # fsutils::rm_r("directory_one");
+/// # fsutils::rm_r("directory_two");
+/// ```
+pub fn mv(path_one: &str, path_two: &str) -> bool {
     let p1 = Path::new(path_one);
     if p1.exists() {
         match fs::rename(path_one, path_two) {
-            Ok(_) => info!("Moved from {} to {}.", path_one, path_two),
-            Err(e) => info!("File moving error: {}", e)
+            Ok(_) => {
+                info!("Moved from {} to {}.", path_one, path_two);
+                true
+            },
+            Err(e) => {
+                info!("File moving error: {}", e);
+                false
+            }
         }
+    } else {
+        false
     }
 }
 
-/// Create file
-pub fn create_file(path: &str) {
+/// Creates a file and returns a boolean based on success or failure.
+///
+/// ## Usage:
+///
+/// ```
+/// assert_eq!(fsutils::create_file("the_file"), true);
+///
+/// # // Cleanup
+/// # fsutils::rm("the_file");
+/// ```
+pub fn create_file(path: &str) -> bool {
     match fs::File::create(path) {
         Ok(_f) => {
-            info!("Successfully wrote file to {}", path)
+            info!("Successfully wrote file to {}", path);
+            true
         }
-        Err(e) => info!("{}", e)
+        Err(e) => {
+            info!("{}", e);
+            false
+        }
     }
 }
 
-/// Create file from bytes
-pub fn create_file_bytes(path: &str, bytes_to_write: &[u8]) {
+/// Creates a file from bytes
+/// and returns a boolean based on success or failure.
+///
+/// # Usage:
+///
+/// ```
+/// let binary_file: &'static [u8] = b"01001000 01100101 01101100 01101100 01101111 00100001";
+///
+/// assert_eq!(fsutils::create_file_bytes("a_binary_file", binary_file), true);
+///
+/// # // Cleanup
+/// # fsutils::rm("a_binary_file");
+/// ```
+pub fn create_file_bytes(path: &str, bytes_to_write: &[u8]) -> bool {
     match fs::File::create(path) {
         Ok(mut buffer) => {
             match buffer.write_all(bytes_to_write) {
-                Ok(_) => info!("Wrote buffer to {}", path),
-                Err(e) => info!("{}", e)
+                Ok(_) => {
+                    info!("Wrote buffer to {}", path);
+                    true
+                },
+                Err(e) => {
+                    info!("{}", e);
+                    false
+                }
             }
         }
-        Err(e) => info!("{}", e)
+        Err(e) => {
+            info!("{}", e);
+            false
+        }
     }
 }
