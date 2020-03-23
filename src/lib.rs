@@ -6,7 +6,7 @@
 // option. This file may not be copied, modified, or distributed
 // except according to those terms.
 
-//! Utilities for common filesystem operations
+//! Utilities for common filesystem operations.
 //!
 //! **fsutils** provides an API based on Bash commands and includes a number
 //! of utility functions to make interacting with the filesystem simpler and more
