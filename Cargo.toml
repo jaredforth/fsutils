@@ -10,7 +10,7 @@ license = "MIT OR Apache-2.0"
 readme = "README.md"
 documentation = "https://docs.rs/fsutils"
 keywords = ["filesystem", "utility", "convenience"]
-categories = ["filesystem", "utility"]
+categories = ["filesystem"]
 
 [badges]
 travis-ci = { repository = "jaredforth/fsutils" }
