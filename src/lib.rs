@@ -7,8 +7,14 @@ use std::fs;
 use std::path::Path;
 use std::io::Write;
 
-/// Create a directory recursively at passed path
-/// and return boolean based on success or failure
+/// Creates a directory recursively at passed path
+/// and returns a boolean based on success or failure.
+///
+/// ## Usage:
+///
+/// ```
+/// assert_eq!(fsutils::mkdir("./testdir"), true);
+/// ```
 pub fn mkdir(path: &str) -> bool {
     if !path_exists(path) {
         match fs::create_dir_all(path) {

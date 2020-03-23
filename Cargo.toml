@@ -1,5 +1,5 @@
 [package]
-name = "utils"
+name = "fsutils"
 version = "0.1.0"
 authors = ["Jared Forth <jaredforthdev@gmail.com>"]
 edition = "2018"
