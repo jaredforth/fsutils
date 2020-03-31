@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/jaredforth/utils.svg?token=mH2pScYxqRkBEzpBQAu6&branch=master)](https://travis-ci.com/jaredforth/utils)
+[![Build Status](https://travis-ci.com/jaredforth/fsutils.svg?token=mH2pScYxqRkBEzpBQAu6&branch=master)](https://travis-ci.com/jaredforth/fsutils)
 [![Build status](https://ci.appveyor.com/api/projects/status/w75cp0q4qr0hngf8?svg=true)](https://ci.appveyor.com/project/jaredforth/fsutils)
 [![Crate](https://img.shields.io/crates/v/fsutils.svg)](https://crates.io/crates/fsutils)
 [![API](https://docs.rs/fsutils/badge.svg)](https://docs.rs/fsutils)
