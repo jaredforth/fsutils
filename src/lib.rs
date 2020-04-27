@@ -17,7 +17,8 @@ extern crate log;
 
 use std::fs;
 use std::path::Path;
-use std::io::Write;
+use std::io::{Write, Read};
+use std::fs::File;
 
 /// Creates a directory recursively at passed path
 /// and returns a boolean based on success or failure.
@@ -304,4 +305,56 @@ pub fn create_file_bytes(path: &str, bytes_to_write: &[u8]) -> bool {
             false
         }
     }
+}
+
+/// Reads data to a file
+/// and returns a `bool` on success
+///
+/// ## Usage:
+///
+/// ```
+/// fsutils::write_file("text.txt", "Hello, world!");
+///
+/// assert_eq!(fsutils::read_file("text.txt"), "Hello, world!");
+///
+/// # // Cleanup
+/// # fsutils::rm("text.txt");
+/// ```
+/// ```
+pub fn write_file(path: &str, contents: &str) -> bool {
+    match File::create(path) {
+        Ok(mut f) => {
+            f.write_all(contents.as_ref()).unwrap();
+            true
+        }
+        Err(e) => {
+            info!("Cannot read file {}", e);
+            false
+        }
+    }
+}
+
+/// Reads data from a file
+/// and returns a `String` with the files's contents
+///
+/// ## Usage:
+///
+/// ```
+/// fsutils::write_file("text.txt", "Hello, world!");
+///
+/// assert_eq!(fsutils::read_file("text.txt"), "Hello, world!");
+///
+/// # // Cleanup
+/// # fsutils::rm("text.txt");
+/// ```
+/// ```
+pub fn read_file(path: &str) -> String {
+    let mut contents = String::new();
+    match File::open(path) {
+        Ok(mut f) => {
+            f.read_to_string(&mut contents).unwrap();
+        }
+        Err(e) => info!("Cannot read file {}", e)
+    }
+    contents
 }
