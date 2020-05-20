@@ -18,7 +18,7 @@ extern crate log;
 use std::fs;
 use std::path::Path;
 use std::io::{Write, Read};
-use std::fs::File;
+use std::fs::{File, OpenOptions};
 
 /// Creates a directory recursively at passed path
 /// and returns a boolean based on success or failure.
@@ -320,7 +320,6 @@ pub fn create_file_bytes(path: &str, bytes_to_write: &[u8]) -> bool {
 /// # // Cleanup
 /// # fsutils::rm("text.txt");
 /// ```
-/// ```
 pub fn write_file(path: &str, contents: &str) -> bool {
     match File::create(path) {
         Ok(mut f) => {
@@ -328,7 +327,38 @@ pub fn write_file(path: &str, contents: &str) -> bool {
             true
         }
         Err(e) => {
-            info!("Cannot read file {}", e);
+            info!("Cannot write file {}", e);
+            false
+        }
+    }
+}
+
+/// Appends data to a file
+/// and returns a `bool` on success
+///
+/// ## Usage:
+///
+/// ```
+/// fsutils::write_file_append("text.txt", "Hello, world! ");
+/// fsutils::write_file_append("text.txt", "Hi Again!");
+///
+/// assert_eq!(fsutils::read_file("text.txt"), "Hello, world! Hi Again!");
+///
+/// # // Cleanup
+/// # fsutils::rm("text.txt");
+/// ```
+pub fn write_file_append(path: &str, contents: &str) -> bool {
+    match OpenOptions::new()
+        .write(true)
+        .create(true)
+        .append(true)
+        .open(path) {
+        Ok(mut f) => {
+            f.write_all(contents.as_ref()).unwrap();
+            true
+        }
+        Err(e) => {
+            info!("Cannot write file {}", e);
             false
         }
     }
@@ -346,7 +376,6 @@ pub fn write_file(path: &str, contents: &str) -> bool {
 ///
 /// # // Cleanup
 /// # fsutils::rm("text.txt");
-/// ```
 /// ```
 pub fn read_file(path: &str) -> String {
     let mut contents = String::new();
