@@ -39,7 +39,7 @@ pub fn mkdir(path: &str) -> bool {
                 true
             }
             Err(e) => {
-                info!("Error creating file: {}", e);
+                error!("Error creating file: {}", e);
                 false
             }
         }
@@ -67,7 +67,7 @@ pub fn rm(path: &str) -> bool {
                 true
             },
             Err(e) => {
-                info!("Error removing {} {}", path, e);
+                error!("Error removing {} {}", path, e);
                 false
             }
         }
@@ -98,13 +98,13 @@ pub fn rmdir(path: &str) -> bool {
                 info!("Removed directory at {}", path);
                 true
             },
-            Err(_e) => {
-                info!("The directory {} is not empty", path);
+            Err(e) => {
+                error!("The directory {} is not empty. {}", path, e);
                 false
             }
         }
     } else {
-        info!("Directory does not exist");
+        error!("Directory {} does not exist", path);
         true
     }
 }
@@ -131,13 +131,13 @@ pub fn rm_r(path: &str) -> bool {
                 info!("Removed directory at {}", path);
                 true
             },
-            Err(_e) => {
-                info!("The directory {} is not empty", path);
+            Err(e) => {
+                error!("The directory {} is not empty. {}", path, e);
                 false
             }
         }
     } else {
-        info!("Directory does not exist");
+        error!("Directory does not exist");
         true
     }
 }
@@ -207,11 +207,11 @@ pub fn directory_is_empty(path: &str) -> bool {
                 false
             }
         } else {
-            info!("The path {} passed is not a directory", path);
+            error!("The path {} passed is not a directory", path);
             false
         }
     } else {
-        info!("The path {} passed does not exist.", path);
+        error!("The path {} passed does not exist.", path);
         false
     }
 }
@@ -241,7 +241,7 @@ pub fn mv(path_one: &str, path_two: &str) -> bool {
                 true
             },
             Err(e) => {
-                info!("File moving error: {}", e);
+                error!("File moving error: {}", e);
                 false
             }
         }
@@ -267,7 +267,7 @@ pub fn create_file(path: &str) -> bool {
             true
         }
         Err(e) => {
-            info!("{}", e);
+            error!("{}", e);
             false
         }
     }
@@ -295,13 +295,13 @@ pub fn create_file_bytes(path: &str, bytes_to_write: &[u8]) -> bool {
                     true
                 },
                 Err(e) => {
-                    info!("{}", e);
+                    error!("{}", e);
                     false
                 }
             }
         }
         Err(e) => {
-            info!("{}", e);
+            error!("{}", e);
             false
         }
     }
@@ -327,7 +327,7 @@ pub fn write_file(path: &str, contents: &str) -> bool {
             true
         }
         Err(e) => {
-            info!("Cannot write file to location '{}' {}", path, e);
+            error!("Cannot write file to location '{}' {}", path, e);
             false
         }
     }
@@ -358,7 +358,7 @@ pub fn write_file_append(path: &str, contents: &str) -> bool {
             true
         }
         Err(e) => {
-            info!("Cannot write file {}", e);
+            error!("Cannot write file {}", e);
             false
         }
     }
@@ -383,7 +383,7 @@ pub fn read_file(path: &str) -> String {
         Ok(mut f) => {
             f.read_to_string(&mut contents).unwrap();
         }
-        Err(e) => info!("Cannot read file {}", e)
+        Err(e) => error!("Cannot read file {}", e)
     }
     contents
 }
