@@ -15,7 +15,7 @@
 #[macro_use]
 extern crate log;
 
-use std::fs;
+use std::{fs, process};
 use std::path::Path;
 use std::io::{Write, Read};
 use std::fs::{File, OpenOptions};
@@ -386,4 +386,50 @@ pub fn read_file(path: &str) -> String {
         Err(e) => error!("Cannot read file {}", e)
     }
     contents
+}
+
+/// Change the current working directory
+///
+/// ## Usage:
+///
+/// ```
+/// use fsutils::cd;
+/// use std::path::Path;
+///
+/// assert_eq!(cd(Path::new("target")).is_some(), true);
+/// assert_eq!(cd(Path::new("does_not_exist")).is_none(), true)
+/// ```
+pub fn cd(cd_path: &Path) -> Option<()> {
+    // Change working directory to directory
+    match std::env::set_current_dir(&cd_path) {
+        Ok(_) => {
+            println!("Changed current dir to {}", cd_path.display());
+            Some(())
+        },
+        Err(e) => {
+            println!("Could not set current dir to {}: {}", cd_path.display(), e);
+            None
+        }
+    }
+}
+
+/// Execute an arbitrary system command
+///
+/// ## Usage
+///
+/// ```
+/// use fsutils::run_command;
+///
+/// assert!(run_command("ls", ["-l"].to_vec()).is_some());
+/// ```
+pub fn run_command(program: &str, args: Vec<&str>) -> Option<i32> {
+    match process::Command::new(program).args(args).status() {
+        Ok(s) => {
+            s.code()
+        }
+        Err(e) => {
+            println!("There was an error {}", e);
+            None
+        }
+    }
 }
