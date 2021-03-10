@@ -23,6 +23,11 @@ Add this to your `Cargo.toml`:
 fsutils = "0.1"
 ```
 
+## Error Logging 
+
+This creates uses the `log` and `env_logger` crates. To enable logging in your application, add `env_logger::init();` to your `main()` function and set the log level to *info* with `RUST_LOG="info" ./yourapp`.
+
+
 ## License
 
 **fsutils** is distributed under the terms of both the MIT license and the

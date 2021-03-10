@@ -327,7 +327,7 @@ pub fn write_file(path: &str, contents: &str) -> bool {
             true
         }
         Err(e) => {
-            info!("Cannot write file {}", e);
+            info!("Cannot write file to location '{}' {}", path, e);
             false
         }
     }
