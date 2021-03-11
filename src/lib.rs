@@ -403,11 +403,11 @@ pub fn cd(cd_path: &Path) -> Option<()> {
     // Change working directory to directory
     match std::env::set_current_dir(&cd_path) {
         Ok(_) => {
-            println!("Changed current dir to {}", cd_path.display());
+            info!("Changed current dir to {}", cd_path.display());
             Some(())
         },
         Err(e) => {
-            println!("Could not set current dir to {}: {}", cd_path.display(), e);
+            error!("Could not set current dir to {}: {}", cd_path.display(), e);
             None
         }
     }
@@ -428,7 +428,7 @@ pub fn run_command(program: &str, args: Vec<&str>) -> Option<i32> {
             s.code()
         }
         Err(e) => {
-            println!("There was an error {}", e);
+            error!("There was an error {}", e);
             None
         }
     }
