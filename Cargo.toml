@@ -1,6 +1,6 @@
 [package]
 name = "fsutils"
-version = "0.1.6"
+version = "0.1.7"
 authors = ["Jared Forth <jaredforthdev@gmail.com>"]
 edition = "2018"
 description = "An API for typical filesystem operations based on Bash commands"

@@ -15,8 +15,8 @@
 #[macro_use]
 extern crate log;
 
-use std::{fs, process};
-use std::path::Path;
+use std::{fs, process, io};
+use std::path::{Path, PathBuf};
 use std::io::{Write, Read};
 use std::fs::{File, OpenOptions};
 
@@ -429,6 +429,38 @@ pub fn run_command(program: &str, args: Vec<&str>) -> Option<i32> {
         }
         Err(e) => {
             error!("There was an error {}", e);
+            None
+        }
+    }
+}
+
+/// List directory contents
+///
+/// ## Usage
+///
+/// ```
+/// use fsutils::ls;
+///
+/// assert!(ls(".").is_some());
+/// ```
+pub fn ls(path: &str) -> Option<Vec<PathBuf>> {
+    match fs::read_dir(path) {
+        Ok(p) => {
+            let results = p.map(|res| res.map(|e| e.path()))
+                .collect::<Result<Vec<_>, io::Error>>();
+            match results {
+                Ok(r) => {
+                    println!("{:?}", r);
+                    Some(r)
+                },
+                Err(e) => {
+                    println!("{}", e);
+                    None
+                }
+            }
+        }
+        Err(e) => {
+            println!("{:?}", e);
             None
         }
     }
